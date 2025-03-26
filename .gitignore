@@ -1,5 +1,8 @@
-#custom test files
-src/bot/cogs/test.py
+# Ignore all test files in the project
+tests/
+*test.py
+test_*.py
+*_test.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
