@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Context
 
-from util.log_util import LogUtil
+from utils.logger import Logger
 
 class RoyaleXBot(commands.Bot):
 
@@ -24,7 +24,7 @@ class RoyaleXBot(commands.Bot):
             intents=intents,
             help_command=None,
         )
-        self.logger = LogUtil().logger
+        self.logger = Logger()
         self.bot_prefix = os.getenv("PREFIX")
 
     """
