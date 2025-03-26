@@ -4,13 +4,12 @@ from logging.handlers import RotatingFileHandler
 
 
 class Logger(logging.Logger):
-    def __init__(self):
-        name_ = os.getenv("LOG_NAME", "root")
+    def __init__(self, name: str):
         level = logging._nameToLevel.get(
             os.getenv("LOG_LEVEL", "").upper(),
             logging.INFO,
         )
-        super().__init__(name=name_, level=level)
+        super().__init__(name=name, level=level)
 
         # Remove existing handlers to avoid duplication
         if self.hasHandlers():
@@ -18,18 +17,14 @@ class Logger(logging.Logger):
                 self.removeHandler(hdlr)
                 hdlr.close()
 
-        formatter = logging.Formatter(
-            fmt="[{asctime}] [{levelname:<7}] {name}: {message}",
-            datefmt="%Y-%m-%d %H:%M:%S",
-            style="{",
-        )
+        fmtr = logging.Formatter("[{asctime}] [{levelname:<7}] {message}", "%Y-%m-%d %H:%M:%S", style="{")
 
-        handler = RotatingFileHandler(
-            filename=os.getenv("LOG_FILEPATH", "bot.log"),
+        hdlr = RotatingFileHandler(
+            filename="logs/bot.log",
             maxBytes=5 * 1024 * 1024,  # 5 MiB
             backupCount=5,
             encoding="utf-8",
         )
-        handler.setFormatter(formatter)
+        hdlr.setFormatter(fmtr)
 
-        self.addHandler(handler)
+        self.addHandler(hdlr)
