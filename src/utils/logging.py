@@ -17,14 +17,25 @@ class Logger(logging.Logger):
                 self.removeHandler(hdlr)
                 hdlr.close()
 
-        fmtr = logging.Formatter("[{asctime}] [{levelname:<7}] {message}", "%Y-%m-%d %H:%M:%S", style="{")
+        formatter = logging.Formatter(
+            fmt="[{asctime}] [{levelname:<7}] {message}",
+            datefmt="%Y-%m-%d %H:%M:%S",
+            style="{",
+        )
 
-        hdlr = RotatingFileHandler(
-            filename="logs/bot.log",
+        # Ensure log directory exists
+        filename = os.getenv("LOG_FILE_PATH", "logs/bot.log")
+        logs_dir = os.path.dirname(filename)
+
+        if logs_dir:
+            os.makedirs(logs_dir, exist_ok=True)
+
+        handler = RotatingFileHandler(
+            filename=filename,
             maxBytes=5 * 1024 * 1024,  # 5 MiB
             backupCount=5,
             encoding="utf-8",
         )
-        hdlr.setFormatter(fmtr)
+        handler.setFormatter(formatter)
 
-        self.addHandler(hdlr)
+        self.addHandler(handler)
