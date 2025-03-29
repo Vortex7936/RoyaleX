@@ -1,4 +1,5 @@
 import os
+import sys
 import datetime
 import platform
 
@@ -8,6 +9,7 @@ from pathlib import Path
 import discord
 from discord.ext import commands
 
+from database.connection import Database
 from utils.context import Context
 from utils.formats import human_timedelta
 from utils.logging import Logger
@@ -31,7 +33,19 @@ class Bot(commands.Bot):
 
         self.logger = Logger(__name__)
 
-        # Load cogs dynamically
+        self.setup_hook()
+        self.setup_cogs()
+
+    def setup_hook(self):
+        # Attempt database connection and exit on error
+        try:
+            self.database = Database.connect()
+            self.logger.info("Successfully connected to the database.")
+        except Exception as e:
+            self.logger.error(e)
+            sys.exit(1)
+
+    def setup_cogs(self):
         for file in Path("src/cogs").glob("*.py"):
             name = file.stem
             try:
