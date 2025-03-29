@@ -8,7 +8,7 @@ class Database(AsyncIOMotorDatabase):
     client = AsyncIOMotorClient(os.getenv("DATABASE_URI"))
 
     def __new__(cls, *args, **kwargs):
-        raise RuntimeError("Use Database.connect() instead of direct instantiation.")
+        raise RuntimeError(f"Use {cls.__name__}.connect() instead of direct instantiation.")
 
     @classmethod
     async def ping(cls):
